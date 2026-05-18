@@ -23,7 +23,7 @@ const COPY = {
   es: {
     nav: 'Empezar Gratis',
     hero: { eyebrow:'100% Gratuito · Open Source', line1:'TU GYM BRO', line2:'DIGITAL.', sub:'La app de entrenamiento que piensa como un bro — y entrena como un científico.', cta:'Empezar Ahora' },
-    stats: [{ v:'100+', l:'Ejercicios con técnica detallada' }, { v:'0€', l:'Para siempre, sin suscripciones' }, { v:'10x', l:'Motor de rutinas con IA' }],
+    stats: [{ v:'104', l:'Ejercicios con técnica detallada' }, { v:'200+', l:'Vídeos de técnica integrados' }, { v:'0€', l:'Para siempre, sin suscripciones' }, { v:'10x', l:'Motor de rutinas con IA' }],
     featEyebrow:'Todo lo que necesitas', featTitle:'Una app completa.\nSin coste.',
     feats:[
       { icon:'⚡', t:'Rutinas con IA',          d:'Personalizadas según tu somatotipo, nivel y lesiones. Motor anti-estancamiento.'  },
@@ -48,7 +48,7 @@ const COPY = {
   en: {
     nav: 'Start Free',
     hero: { eyebrow:'100% Free · Open Source', line1:'YOUR DIGITAL', line2:'GYM BRO.', sub:'The workout app that thinks like a bro — and trains like a scientist.', cta:'Get Started' },
-    stats: [{ v:'100+', l:'Exercises with detailed technique' }, { v:'0€', l:'Forever free, no subscriptions' }, { v:'10x', l:'AI-powered routine engine' }],
+    stats: [{ v:'104', l:'Exercises with detailed technique' }, { v:'200+', l:'Technique videos included' }, { v:'0€', l:'Forever free, no subscriptions' }, { v:'10x', l:'AI-powered routine engine' }],
     featEyebrow:'Everything you need', featTitle:'A complete app.\nNo cost.',
     feats:[
       { icon:'⚡', t:'AI Routines',         d:'Personalized for your body type, level and injuries. Anti-plateau engine.'         },
