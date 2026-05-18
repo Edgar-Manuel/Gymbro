@@ -206,3 +206,9 @@ A continuación, se presenta la lista completa de **28 videos** del canal de You
 | Mejora la Estética de tus HOMBROS | hombros | [Ver Video](https://www.youtube.com/watch?v=fa1isy1BoRM) |
 | Cómo hacer DEFINICIÓN | nutricion | [Ver Video](https://www.youtube.com/watch?v=2jN5i_oAyBQ) |
 | No cortes los CARBOHIDRATOS | nutricion | [Ver Video](https://www.youtube.com/watch?v=YQlNzIFjYKw) |
+
+| Entrenar espalda sin barra de Dominadas | espalda | [Ver Video](https://www.youtube.com/watch?v=7uNMVtPddNo) |
+| Hacer Dominadas sin BARRA | espalda | [Ver Video](https://www.youtube.com/watch?v=izMt_xjWrRk) |
+| Cómo hacer Elevaciones Laterales en Polea | hombros | [Ver Video](https://www.youtube.com/watch?v=SaoW-iSUxfk) |
+| Mejora tu rutina de Hombros | hombros | [Ver Video](https://www.youtube.com/watch?v=gTCHxo3fv60) |
+| El ejercicio más infravalorado de HOMBRO | hombros | [Ver Video](https://www.youtube.com/watch?v=a1Ww8Isoad4) |

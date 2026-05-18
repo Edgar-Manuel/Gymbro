@@ -807,6 +807,46 @@ export const exerciseVideos: ExerciseVideo[] = [
     category: 'nutricion',
     relatedExercises: [],
   },
+  {
+    id: 'entrenar-espalda-sin-barra-de-dominadas',
+    title: 'Entrenar espalda sin barra de Dominadas',
+    youtubeId: getYouTubeId('https://www.youtube.com/watch?v=7uNMVtPddNo'),
+    url: 'https://www.youtube.com/watch?v=7uNMVtPddNo',
+    category: 'espalda',
+    relatedExercises: ['dominadas-pronas'],
+  },
+  {
+    id: 'hacer-dominadas-sin-barra',
+    title: 'Hacer Dominadas sin BARRA',
+    youtubeId: getYouTubeId('https://www.youtube.com/watch?v=izMt_xjWrRk'),
+    url: 'https://www.youtube.com/watch?v=izMt_xjWrRk',
+    category: 'espalda',
+    relatedExercises: ['dominadas-pronas'],
+  },
+  {
+    id: 'como-hacer-elevaciones-laterales-en-polea',
+    title: 'Cómo hacer Elevaciones Laterales en Polea',
+    youtubeId: getYouTubeId('https://www.youtube.com/watch?v=SaoW-iSUxfk'),
+    url: 'https://www.youtube.com/watch?v=SaoW-iSUxfk',
+    category: 'hombros',
+    relatedExercises: [],
+  },
+  {
+    id: 'mejora-tu-rutina-de-hombros',
+    title: 'Mejora tu rutina de Hombros',
+    youtubeId: getYouTubeId('https://www.youtube.com/watch?v=gTCHxo3fv60'),
+    url: 'https://www.youtube.com/watch?v=gTCHxo3fv60',
+    category: 'hombros',
+    relatedExercises: [],
+  },
+  {
+    id: 'el-ejercicio-mas-infravalorado-de-hombro',
+    title: 'El ejercicio más infravalorado de HOMBRO',
+    youtubeId: getYouTubeId('https://www.youtube.com/watch?v=a1Ww8Isoad4'),
+    url: 'https://www.youtube.com/watch?v=a1Ww8Isoad4',
+    category: 'hombros',
+    relatedExercises: [],
+  },
 ];
 
 // Helper functions
