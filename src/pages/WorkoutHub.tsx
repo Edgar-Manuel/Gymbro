@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store';
-import { Dumbbell } from 'lucide-react';
+
 
 /**
  * WorkoutHub - Punto de entrada inteligente para entrenamientos

@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Dumbbell } from 'lucide-react';
+
 
 interface ProtectedRouteProps {
   children: React.ReactNode;

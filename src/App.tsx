@@ -22,7 +22,7 @@ import Profile from '@/pages/Profile';
 import SharedRoutineView from '@/pages/SharedRoutineView';
 import WorkoutDetail from '@/pages/WorkoutDetail';
 import GymMachineLibrary from '@/pages/GymMachineLibrary';
-import { Dumbbell } from 'lucide-react';
+
 import { notificationManager } from '@/utils/notificationManager';
 import { Toaster } from 'sonner';
 
