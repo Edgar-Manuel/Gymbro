@@ -37,7 +37,7 @@ export default function Login() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
-              <Dumbbell className="h-12 w-12 text-primary" />
+              <img src="/logo.png" alt="GymBro" className="h-20 w-20 rounded-2xl object-cover shadow-lg" />
             </div>
             <CardTitle className="text-2xl">Bienvenido a GymBro</CardTitle>
             <CardDescription>

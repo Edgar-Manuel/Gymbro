@@ -34,7 +34,7 @@ export default function WorkoutHub() {
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center">
-        <Dumbbell className="w-12 h-12 animate-pulse mx-auto mb-4 text-primary" />
+        <img src="/logo.png" alt="GymBro" className="w-16 h-16 mx-auto mb-4 rounded-2xl object-cover animate-pulse shadow-lg" />
         <p className="text-muted-foreground">Preparando entrenamiento...</p>
       </div>
     </div>

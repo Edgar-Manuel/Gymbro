@@ -154,10 +154,7 @@ function Nav({ c, ac, th, lang, mode, setLang, setMode }: {
   return (
     <nav style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, padding:'0 16px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', background: scrolled ? th.bg2+'ee' : 'transparent', backdropFilter: scrolled ? 'blur(16px)' : 'none', borderBottom: scrolled ? `1px solid ${th.border}` : 'none', transition:'all .3s ease' }}>
       <div style={{ display:'flex', alignItems:'center', gap:'8px', fontFamily:"'Barlow Condensed',sans-serif", fontSize:'20px', fontWeight:900, letterSpacing:'.5px', color: th.text, flexShrink:0 }}>
-        <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
-          <rect width="28" height="28" rx="8" fill={ac.hex}/>
-          <path d="M6 14h4M18 14h4M10 10v8M18 10v8M10 14h8" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-        </svg>
+        <img src="/logo.png" alt="GymBro" style={{ width:'32px', height:'32px', borderRadius:'8px', objectFit:'cover' }} />
         GymBro
       </div>
       <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
