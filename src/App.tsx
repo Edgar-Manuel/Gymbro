@@ -22,7 +22,7 @@ import Profile from '@/pages/Profile';
 import SharedRoutineView from '@/pages/SharedRoutineView';
 import WorkoutDetail from '@/pages/WorkoutDetail';
 import GymMachineLibrary from '@/pages/GymMachineLibrary';
-import { Dumbbell } from 'lucide-react';
+
 import { notificationManager } from '@/utils/notificationManager';
 import { Toaster } from 'sonner';
 
@@ -67,7 +67,7 @@ function App() {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="text-center">
-          <Dumbbell className="w-16 h-16 animate-pulse mx-auto mb-4 text-primary" />
+          <img src="/logo.png" alt="GymBro" className="w-20 h-20 mx-auto mb-4 rounded-2xl object-cover animate-pulse shadow-lg" />
           <h2 className="text-2xl font-bold mb-2">GymBro</h2>
           <p className="text-muted-foreground">Inicializando tu gimnasio virtual...</p>
         </div>

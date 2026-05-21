@@ -22,8 +22,8 @@ const THEMES: Record<ModeKey, Th> = {
 const COPY = {
   es: {
     nav: 'Empezar Gratis',
-    hero: { eyebrow:'100% Gratuito · Open Source', line1:'TU GYM BRO', line2:'DIGITAL.', sub:'La app de entrenamiento que piensa como un bro — y entrena como un científico.', cta:'Empezar Ahora', cta2:'Ver en GitHub' },
-    stats: [{ v:'100+', l:'Ejercicios con técnica detallada' }, { v:'0€', l:'Para siempre, sin suscripciones' }, { v:'10x', l:'Motor de rutinas con IA' }],
+    hero: { eyebrow:'100% Gratuito · Open Source', line1:'TU GYM BRO', line2:'DIGITAL.', sub:'La app de entrenamiento que piensa como un bro — y entrena como un científico.', cta:'Empezar Ahora' },
+    stats: [{ v:'104', l:'Ejercicios con técnica detallada' }, { v:'200+', l:'Vídeos de técnica integrados' }, { v:'0€', l:'Para siempre, sin suscripciones' }, { v:'10x', l:'Motor de rutinas con IA' }],
     featEyebrow:'Todo lo que necesitas', featTitle:'Una app completa.\nSin coste.',
     feats:[
       { icon:'⚡', t:'Rutinas con IA',          d:'Personalizadas según tu somatotipo, nivel y lesiones. Motor anti-estancamiento.'  },
@@ -40,15 +40,15 @@ const COPY = {
     rtDesc:'No es una plantilla genérica. El motor 10x analiza tu somatotipo, nivel, lesiones y equipamiento para crear la rutina exacta que tu cuerpo necesita.',
     rtPoints:['Adaptación biológica por somatotipo','Escalado por nivel de experiencia','Anti-estancamiento con shuffle dinámico','Respeta tus lesiones activas'],
     frEyebrow:'Sin trampa ni cartón', frTitle:'100% Gratis.\nPara siempre.',
-    frDesc:'Sin suscripciones. Sin paywalls. Sin anuncios. GymBro es open source y siempre lo será. Descárgalo, úsalo, mejóralo.',
-    frCta:'Ver código en GitHub',
+    frDesc:'Sin suscripciones. Sin paywalls. Sin anuncios. GymBro es gratis y siempre lo será. Empieza hoy, sin tarjeta de crédito.',
+    frCta:'Empezar Ahora — Es Gratis',
     ctaTitle1:'EMPIEZA HOY.', ctaTitle2:'GRATIS.', ctaSub:'Tu cuerpo no espera. GymBro tampoco.', ctaBtn:'Empezar Ahora — Es Gratis',
     footer:'GymBro · 100% Gratuito y Open Source · Hecho con 💪',
   },
   en: {
     nav: 'Start Free',
-    hero: { eyebrow:'100% Free · Open Source', line1:'YOUR DIGITAL', line2:'GYM BRO.', sub:'The workout app that thinks like a bro — and trains like a scientist.', cta:'Get Started', cta2:'View on GitHub' },
-    stats: [{ v:'100+', l:'Exercises with detailed technique' }, { v:'0€', l:'Forever free, no subscriptions' }, { v:'10x', l:'AI-powered routine engine' }],
+    hero: { eyebrow:'100% Free · Open Source', line1:'YOUR DIGITAL', line2:'GYM BRO.', sub:'The workout app that thinks like a bro — and trains like a scientist.', cta:'Get Started' },
+    stats: [{ v:'104', l:'Exercises with detailed technique' }, { v:'200+', l:'Technique videos included' }, { v:'0€', l:'Forever free, no subscriptions' }, { v:'10x', l:'AI-powered routine engine' }],
     featEyebrow:'Everything you need', featTitle:'A complete app.\nNo cost.',
     feats:[
       { icon:'⚡', t:'AI Routines',         d:'Personalized for your body type, level and injuries. Anti-plateau engine.'         },
@@ -65,8 +65,8 @@ const COPY = {
     rtDesc:"Not a generic template. The 10x engine analyzes your body type, level, injuries and equipment to create the exact routine your body needs.",
     rtPoints:['Biological adaptation by body type','Scaling by experience level','Anti-plateau dynamic shuffle','Respects your active injuries'],
     frEyebrow:'No tricks', frTitle:'100% Free.\nForever.',
-    frDesc:'No subscriptions. No paywalls. No ads. GymBro is open source and always will be. Download it, use it, improve it.',
-    frCta:'View code on GitHub',
+    frDesc:'No subscriptions. No paywalls. No ads. GymBro is free and always will be. Start today, no credit card required.',
+    frCta:'Get Started — It\'s Free',
     ctaTitle1:'START TODAY.', ctaTitle2:'FREE.', ctaSub:"Your body can't wait. Neither can GymBro.", ctaBtn:"Get Started — It's Free",
     footer:'GymBro · 100% Free and Open Source · Made with 💪',
   },
@@ -154,10 +154,7 @@ function Nav({ c, ac, th, lang, mode, setLang, setMode }: {
   return (
     <nav style={{ position:'fixed', top:0, left:0, right:0, zIndex:100, padding:'0 16px', height:'56px', display:'flex', alignItems:'center', justifyContent:'space-between', background: scrolled ? th.bg2+'ee' : 'transparent', backdropFilter: scrolled ? 'blur(16px)' : 'none', borderBottom: scrolled ? `1px solid ${th.border}` : 'none', transition:'all .3s ease' }}>
       <div style={{ display:'flex', alignItems:'center', gap:'8px', fontFamily:"'Barlow Condensed',sans-serif", fontSize:'20px', fontWeight:900, letterSpacing:'.5px', color: th.text, flexShrink:0 }}>
-        <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
-          <rect width="28" height="28" rx="8" fill={ac.hex}/>
-          <path d="M6 14h4M18 14h4M10 10v8M18 10v8M10 14h8" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
-        </svg>
+        <img src="/logo.png" alt="GymBro" style={{ width:'32px', height:'32px', borderRadius:'8px', objectFit:'cover' }} />
         GymBro
       </div>
       <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
@@ -196,18 +193,12 @@ function Hero({ c, ac, th }: { c: typeof COPY.es; ac: Ac; th: Th }) {
           {c.hero.sub}
         </p>
 
-        <div className="lp-fade-up" style={{ animationDelay:'.5s', display:'flex', flexDirection: isMobile ? 'column' : 'row' as const, gap:'12px', justifyContent:'center', alignItems:'stretch' }}>
-          <Link to="/login" style={{ background: ac.hex, color:'#fff', padding: isMobile ? '14px 20px' : '16px 36px', borderRadius:'14px', fontWeight:700, fontSize:'16px', textDecoration:'none', boxShadow:`0 0 40px ${ac.mid}`, textAlign:'center' as const, transition:'transform .2s' }}
+        <div className="lp-fade-up" style={{ animationDelay:'.5s', display:'flex', justifyContent:'center' }}>
+          <Link to="/login" style={{ background: ac.hex, color:'#fff', padding: isMobile ? '14px 32px' : '16px 48px', borderRadius:'14px', fontWeight:700, fontSize:'16px', textDecoration:'none', boxShadow:`0 0 40px ${ac.mid}`, textAlign:'center' as const, transition:'transform .2s' }}
             onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform='scale(1.02)'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform='scale(1)'; }}>
             {c.hero.cta}
           </Link>
-          <a href="https://github.com/Edgar-Manuel/Gymbro-" target="_blank" rel="noreferrer"
-            style={{ background:'transparent', color: th.text, padding: isMobile ? '14px 20px' : '16px 36px', borderRadius:'14px', fontWeight:600, fontSize:'16px', textDecoration:'none', border:`1px solid ${th.borderMid}`, textAlign:'center' as const, transition:'background .2s' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = th.bg2; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = 'transparent'; }}>
-            {c.hero.cta2}
-          </a>
         </div>
 
         {/* Floating mock cards — desktop: absolutely positioned; mobile: horizontal scroll */}
@@ -474,15 +465,12 @@ function FreeSection({ c, ac, th }: { c: typeof COPY.es; ac: Ac; th: Th }) {
             <div style={{ fontSize:'12px', fontWeight:700, letterSpacing:'3px', textTransform:'uppercase' as const, color: ac.hex, marginBottom:'20px' }}>{c.frEyebrow}</div>
             <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:'clamp(56px,9vw,110px)', fontWeight:900, lineHeight:.9, color: th.text, whiteSpace:'pre-line' as const, marginBottom:'24px' }}>{c.frTitle}</h2>
             <p style={{ fontSize:'18px', color: th.text2, maxWidth:'520px', margin:'0 auto 40px', lineHeight:1.6 }}>{c.frDesc}</p>
-            <a href="https://github.com/Edgar-Manuel/Gymbro-" target="_blank" rel="noreferrer"
-              style={{ display:'inline-flex', alignItems:'center', gap:'10px', background:'transparent', color: th.text, border:`1px solid ${th.borderMid}`, padding:'14px 28px', borderRadius:'12px', fontWeight:600, fontSize:'15px', textDecoration:'none', transition:'background .2s, border-color .2s' }}
-              onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background = th.bg3; el.style.borderColor = ac.hex; }}
-              onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background = 'transparent'; el.style.borderColor = th.borderMid; }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
-              </svg>
+            <Link to="/login"
+              style={{ display:'inline-block', background: ac.hex, color:'#fff', border:'none', padding:'16px 36px', borderRadius:'12px', fontWeight:700, fontSize:'15px', textDecoration:'none', boxShadow:`0 0 40px ${ac.mid}`, transition:'transform .2s' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform='scale(1.03)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform='scale(1)'; }}>
               {c.frCta}
-            </a>
+            </Link>
           </div>
         </div>
       </div>

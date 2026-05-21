@@ -46,6 +46,11 @@ interface AppState {
   // Weekly schedule override (reschedule missed workout)
   weeklyOverride: WeeklyOverride;
   setWeeklyOverride: (o: WeeklyOverride) => void;
+
+  // CBum 9-day cycle tracker (0-indexed: 0 = Día 1)
+  cbumCycleDay: number;
+  setCbumCycleDay: (day: number) => void;
+  advanceCbumCycleDay: () => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -82,6 +87,11 @@ export const useAppStore = create<AppState>()(
       // Weekly override
       weeklyOverride: null as WeeklyOverride,
       setWeeklyOverride: (o) => set({ weeklyOverride: o }),
+
+      // CBum 9-day cycle tracker
+      cbumCycleDay: 0,
+      setCbumCycleDay: (day) => set({ cbumCycleDay: day % 9 }),
+      advanceCbumCycleDay: () => set((state) => ({ cbumCycleDay: (state.cbumCycleDay + 1) % 9 })),
     }),
     {
       name: 'gymbro-storage',
@@ -90,6 +100,7 @@ export const useAppStore = create<AppState>()(
         isDarkMode: state.isDarkMode,
         sidebarOpen: state.sidebarOpen,
         weeklyOverride: state.weeklyOverride,
+        cbumCycleDay: state.cbumCycleDay,
       }),
     }
   )

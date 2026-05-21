@@ -1,7 +1,7 @@
 // Rutina Chris Bumstead (CBum) — 6× Mr. Olympia Classic Physique
 // Filosofía: 2 series efectivas al fallo · sobrecarga progresiva ·
 // salud articular · conexión mente-músculo · FST-7 al final.
-// Split de 8 días (6 entreno + 2 descanso) — repetir indefinidamente.
+// Split de 9 días (7 entreno + 2 descanso) — ciclo rotativo, no semanal.
 
 import type { FullWRoutine, FullWDay, FullWExercise } from './fullwRoutines';
 

@@ -9,8 +9,9 @@ import {
 import type { FullWRoutine } from '@/data/fullwRoutines';
 import {
   ChevronDown, ChevronUp, Trophy, Calendar, Clock, ArrowRight,
-  Dumbbell, Sparkles, Salad, Brain, Moon, Flame, Zap, Link2,
+  Dumbbell, Sparkles, Salad, Brain, Moon, Flame, Zap, Link2, RefreshCw,
 } from 'lucide-react';
+import { useAppStore } from '@/store';
 
 interface Props {
   onUseRoutine: (rutina: FullWRoutine) => void;
@@ -20,6 +21,7 @@ export default function CbumRoutineView({ onUseRoutine }: Props) {
   const [phase, setPhase] = useState<CbumPhase>('offseason');
   const [intensity, setIntensity] = useState<CbumIntensity>('avanzado');
   const [openDay, setOpenDay] = useState<number | null>(0);
+  const { cbumCycleDay, setCbumCycleDay, advanceCbumCycleDay } = useAppStore();
 
   const rutina = useMemo(() => buildCbumRoutine(phase, intensity), [phase, intensity]);
   const nutricion = CBUM_NUTRITION[phase];
@@ -37,7 +39,7 @@ export default function CbumRoutineView({ onUseRoutine }: Props) {
                 CBum — Classic Physique
               </CardTitle>
               <CardDescription>
-                Chris Bumstead · 6× Mr. Olympia · Split de 8 días
+                Chris Bumstead · 6× Mr. Olympia · Split de 9 días (ciclo rotativo)
               </CardDescription>
             </div>
             <Badge variant="default" className="bg-amber-500 hover:bg-amber-500/90 text-white shrink-0">
@@ -105,6 +107,50 @@ export default function CbumRoutineView({ onUseRoutine }: Props) {
               </p>
             )}
           </div>
+
+          {/* Cycle day tracker */}
+          {(() => {
+            const rutinaTmp = buildCbumRoutine(phase, intensity);
+            const todayDia = rutinaTmp.plan[cbumCycleDay];
+            const isRest = todayDia?.ejercicios.length === 0;
+            return (
+              <div className={`rounded-lg border px-3 py-2 flex items-center justify-between gap-2 ${isRest ? 'bg-muted/30 border-border' : 'bg-amber-50/60 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700/50'}`}>
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="text-lg">{isRest ? '😴' : '🏋️'}</span>
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold text-foreground truncate">
+                      Posición en el ciclo: Día {cbumCycleDay + 1}/9
+                    </p>
+                    <p className="text-[11px] text-muted-foreground truncate">
+                      {isRest ? 'Descanso — recuperación activa' : todayDia?.nombre}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-1 shrink-0">
+                  <button
+                    type="button"
+                    title="Avanzar al siguiente día del ciclo"
+                    onClick={advanceCbumCycleDay}
+                    className="p-1.5 rounded-md hover:bg-amber-200/60 dark:hover:bg-amber-800/40 transition-colors"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  </button>
+                  <select
+                    title="Cambiar día del ciclo manualmente"
+                    value={cbumCycleDay}
+                    onChange={e => setCbumCycleDay(Number(e.target.value))}
+                    className="text-[11px] bg-background border border-border rounded px-1 py-0.5 cursor-pointer"
+                  >
+                    {rutinaTmp.plan.map((d, i) => (
+                      <option key={i} value={i}>
+                        Día {i + 1}{d.ejercicios.length === 0 ? ' 😴' : ` — ${d.grupos[0] ?? d.nombre.split('—')[1]?.trim() ?? ''}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            );
+          })()}
 
           {/* Stats strip */}
           <div className="grid grid-cols-4 gap-2 text-center">

@@ -60,7 +60,7 @@ export default function Layout() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <Dumbbell className="h-6 w-6 text-primary" />
+            <img src="/logo.png" alt="GymBro" className="h-8 w-8 rounded-lg object-cover" />
             <span className="text-xl font-bold">GymBro</span>
           </Link>
 
