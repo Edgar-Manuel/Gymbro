@@ -125,7 +125,7 @@ export function generarRutinaPersonalizada(
       seriesObjetivo: determinarSeries(ex, user.objetivo, user.somatotipo, prioridades),
       repsObjetivo: determinarReps(ex, user.objetivo, user.somatotipo),
       pesoSugerido: undefined as number | undefined,
-      notas: ex.tecnica.consejosClave[0] || 'Enfócate en la técnica'
+      notas: ex.tecnica?.consejosClave?.[0] || 'Enfócate en la técnica'
     }));
 
     // Adaptar descanso según somatotipo
@@ -142,7 +142,11 @@ export function generarRutinaPersonalizada(
       duracionEstimada,
       orden: index + 1
     };
-  }).filter(dia => dia.ejercicios.length > 0); // Remover días vacíos (descanso) por si acaso
+  }).filter(dia => dia.ejercicios.length > 0);
+
+  if (diasRutina.length === 0) {
+    throw new Error('No se pudieron seleccionar ejercicios. Verifica que tengas equipamiento disponible configurado en tu perfil.');
+  }
 
   const rutina: RutinaSemanal = {
     id: `rutina-${Date.now()}`,

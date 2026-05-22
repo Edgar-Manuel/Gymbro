@@ -311,9 +311,9 @@ export function fullWToRutinaSemanal(
     });
 
     return {
-      id: `fullw-dia-${orden + 1}`,
+      id: `${rutina.id}-d${orden + 1}`,
       nombre: dia.nombre,
-      grupos: [] as GrupoMuscular[],
+      grupos: Array.from(new Set(ejercicios.map(ej => inferGrupo(ej.ejercicio?.nombre ?? '')))) as GrupoMuscular[],
       ejercicios,
       duracionEstimada: Math.round(ejercicios.length * 12 + 15),
       orden: orden + 1,

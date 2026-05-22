@@ -322,13 +322,24 @@ Esquema requerido (ejemplo de un día COMPLETO con 6 ejercicios):
       { role: 'user', content: `Genera la rutina Full W adaptativa de ${dias} días. CADA día debe tener mínimo 6 ejercicios (idealmente 6-7). Sesiones de 60-90 minutos.` },
     ],
     0.4,
-    5000,
+    8000,
   );
 
   const jsonMatch = raw.match(/\{[\s\S]*\}/);
   if (!jsonMatch) throw new Error('La IA no devolvió JSON válido. Intenta de nuevo.');
 
   const rutina = JSON.parse(jsonMatch[0]) as import('@/data/fullwRoutines').FullWRoutine;
+
+  if (!Array.isArray(rutina.plan) || rutina.plan.length === 0) {
+    throw new Error('La IA generó una rutina con estructura inválida. Intenta de nuevo.');
+  }
+
+  for (const dia of rutina.plan) {
+    if (!Array.isArray(dia.ejercicios) || dia.ejercicios.length < 6) {
+      throw new Error(`El día "${dia.nombre}" tiene solo ${dia.ejercicios?.length ?? 0} ejercicios (mínimo 6). Intenta de nuevo.`);
+    }
+  }
+
   rutina.id = `fullw-ia-${Date.now()}`;
   return rutina;
 }

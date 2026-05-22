@@ -65,6 +65,7 @@ const FULLW_3: FullWRoutine = {
         { nombre: 'Remo con Mancuerna (unilateral)', series: 2, reps: '8-10', descanso: '1-2 min' },
         { nombre: 'Curl de Bíceps con Barra', series: 2, reps: '8-10', descanso: '1-2 min' },
         { nombre: 'Curl Martillo', series: 2, reps: '10-12', descanso: '1 min' },
+        { nombre: 'Face Pull en Polea', series: 2, reps: '15-20', descanso: '1 min', notas: 'Salud del manguito rotador. Codos altos, tirón hacia la frente.' },
       ],
     },
     {
@@ -112,6 +113,7 @@ const FULLW_4: FullWRoutine = {
         { nombre: 'Extensiones de Cuádriceps', series: 2, reps: '12-15', descanso: '1-2 min' },
         { nombre: 'Elevaciones de Gemelos (de pie)', series: 3, reps: '10-15', descanso: '1 min' },
         { nombre: 'Plancha Abdominal', series: 3, reps: '45-60 seg', descanso: '1 min' },
+        { nombre: 'Hip Thrust con Barra', series: 3, reps: '10-12', descanso: '2 min', notas: 'Contracción máxima de glúteo en la posición superior.' },
       ],
     },
     {
@@ -196,6 +198,7 @@ const FULLW_5: FullWRoutine = {
         { nombre: 'Press de Hombros con Mancuernas', series: 3, reps: '8-10', descanso: '2 min' },
         { nombre: 'Aperturas en Polea', series: 2, reps: '12-15', descanso: '1 min' },
         { nombre: 'Jalón Neutro al Pecho', series: 2, reps: '10-12', descanso: '1-2 min' },
+        { nombre: 'Elevaciones Laterales', series: 3, reps: '12-15', descanso: '1 min', notas: 'Cabeza medial del deltoides. Codos ligeramente flexionados.' },
       ],
     },
     {
@@ -231,6 +234,7 @@ const FULLW_6: FullWRoutine = {
         { nombre: 'Press Inclinado con Mancuernas', series: 3, reps: '8-10', descanso: '2 min' },
         { nombre: 'Fondos en Paralelas', series: 3, reps: '8-10', descanso: '2 min' },
         { nombre: 'Extensiones Tríceps Polea', series: 2, reps: '10-12', descanso: '1 min' },
+        { nombre: 'Elevaciones Laterales', series: 3, reps: '12-15', descanso: '1 min', notas: 'Cierre del día de empuje. Cabeza medial del deltoides.' },
       ],
     },
     {
@@ -242,6 +246,7 @@ const FULLW_6: FullWRoutine = {
         { nombre: 'Dominadas Lastradas', series: 3, reps: '4-6', descanso: '3 min' },
         { nombre: 'Curl con Barra Z', series: 3, reps: '6-8', descanso: '2 min' },
         { nombre: 'Curl Martillo', series: 2, reps: '8-10', descanso: '1 min' },
+        { nombre: 'Face Pull en Polea', series: 3, reps: '15-20', descanso: '1 min', notas: 'Salud articular del hombro. Indispensable en días de tirón pesado.' },
       ],
     },
     {
@@ -265,6 +270,7 @@ const FULLW_6: FullWRoutine = {
         { nombre: 'Press de Hombros con Mancuernas', series: 3, reps: '10-12', descanso: '2 min' },
         { nombre: 'Elevaciones Laterales en Polea', series: 3, reps: '12-15', descanso: '1 min' },
         { nombre: 'Extensiones Tríceps sobre la Cabeza', series: 3, reps: '10-12', descanso: '1 min' },
+        { nombre: 'Extensiones en Polea (Tríceps)', series: 3, reps: '12-15', descanso: '1 min', notas: 'Cierre de tríceps con tensión constante en la polea.' },
       ],
     },
     {
@@ -276,6 +282,7 @@ const FULLW_6: FullWRoutine = {
         { nombre: 'Remo con Mancuerna', series: 3, reps: '10-12', descanso: '1-2 min' },
         { nombre: 'Curl Concentrado Scott', series: 2, reps: '10-12', descanso: '1 min' },
         { nombre: 'Face Pull en Polea', series: 3, reps: '12-15', descanso: '1 min', notas: 'Salud de hombros.' },
+        { nombre: 'Curl Inclinado con Mancuernas', series: 3, reps: '10-12', descanso: '1 min', notas: 'Máximo estiramiento del bíceps en banco inclinado a 45°.' },
       ],
     },
     {

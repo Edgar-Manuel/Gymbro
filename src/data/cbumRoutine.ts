@@ -253,7 +253,7 @@ export function buildCbumRoutine(phase: CbumPhase, intensity: CbumIntensity): Fu
   return {
     id: `cbum-${phase}-${intensity}`,
     nombre: `CBum — ${phaseLabel} (${intLabel})`,
-    dias: 7,
+    dias: 9,
     semanas: 12,
     descripcion: phase === 'offseason'
       ? 'Off-season: hipertrofia máxima. Ciclo de 9 días, espalda 2×/ciclo, GVT y FST-7.'
