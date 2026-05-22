@@ -165,7 +165,23 @@ RESPONDE SOLO CON EL NOMBRE DEL AGENTE, NADA MÁS.`;
       lowerQuery.includes('descanso') ||
       lowerQuery.includes('frecuencia') ||
       lowerQuery.includes('volumen') ||
-      lowerQuery.includes('split')
+      lowerQuery.includes('split') ||
+      lowerQuery.includes('hago hoy') ||
+      lowerQuery.includes('que hago') ||
+      lowerQuery.includes('qué hago') ||
+      lowerQuery.includes('hacer hoy') ||
+      lowerQuery.includes('toca hoy') ||
+      lowerQuery.includes('entreno hoy') ||
+      lowerQuery.includes('qué entreno') ||
+      lowerQuery.includes('que entreno') ||
+      lowerQuery.includes('toca entrenar') ||
+      lowerQuery.includes('empezar') ||
+      lowerQuery.includes('empiezo') ||
+      lowerQuery.includes('peso muerto') ||
+      lowerQuery.includes('sobrecarga') ||
+      lowerQuery.includes('progresión') ||
+      lowerQuery.includes('fallo muscular') ||
+      lowerQuery.includes('deload')
     ) {
       return 'training';
     }

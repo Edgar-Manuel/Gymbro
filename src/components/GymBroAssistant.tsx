@@ -7,7 +7,6 @@ import { useState, useRef, useEffect } from 'react';
 import { MessageCircle, X, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card } from '@/components/ui/card';
 import { orchestrator, type AgentContext } from '@/services/agents';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
@@ -179,9 +178,9 @@ export default function GymBroAssistant() {
 
       {/* Chat window */}
       {isOpen && (
-        <Card className="fixed bottom-6 right-6 w-96 h-[600px] shadow-2xl z-50 flex flex-col">
+        <div className="fixed inset-0 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-96 sm:h-[600px] z-50 flex flex-col bg-card sm:rounded-xl shadow-2xl border sm:border">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground rounded-t-lg">
+          <div className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground sm:rounded-t-xl">
             <div className="flex items-center gap-2">
               <MessageCircle className="h-5 w-5" />
               <h3 className="font-bold">GymBro Assistant</h3>
@@ -285,7 +284,7 @@ export default function GymBroAssistant() {
               </Button>
             </div>
           </div>
-        </Card>
+        </div>
       )}
     </>
   );
