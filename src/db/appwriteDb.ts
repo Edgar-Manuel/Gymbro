@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { databases, account } from '@/services/appwrite';
+import { databases, account, storage, STORAGE_BUCKETS } from '@/services/appwrite';
 import { APPWRITE_DATABASE_ID, COLLECTIONS } from '@/config/appwriteSchema';
 import { Query, ID } from 'appwrite';
 import type {
@@ -33,6 +33,16 @@ function toISO(value: Date | string | number | null | undefined): string | undef
   }
   const d = new Date(value);
   return isNaN(d.getTime()) ? undefined : d.toISOString();
+}
+
+/** Convert a base64 data URL to a File object for Appwrite Storage upload. */
+function base64ToFile(dataUrl: string, filename: string): File {
+  const [header, base64] = dataUrl.split(',');
+  const mime = header.match(/:(.*?);/)?.[1] ?? 'image/jpeg';
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return new File([bytes], filename, { type: mime });
 }
 
 /**
@@ -897,13 +907,25 @@ export const appwriteDbHelpers = {
     try {
       const userId = await this.getCurrentUserId();
 
+      // Upload image binary to Appwrite Storage so datos stays small (< 10k chars)
+      let fileId = photo.fileId;
+      if (photo.url?.startsWith('data:') && !fileId) {
+        try {
+          const file = base64ToFile(photo.url, `progress-${photo.id}.jpg`);
+          const uploaded = await storage.createFile(STORAGE_BUCKETS.PROGRESS_PHOTOS, photo.id, file);
+          fileId = uploaded.$id;
+        } catch (storageErr) {
+          // Storage upload failed — skip image sync but still save metadata
+          console.warn('[Photos] Storage upload failed, storing metadata only:', storageErr);
+        }
+      }
+
       const photoData = {
         userId,
         fecha: toISO(photo.fecha),
         tipo: photo.tipo,
         datos: JSON.stringify({
-          fileId: photo.fileId,
-          url: photo.url,
+          fileId,
           peso: photo.peso,
           notas: photo.notas || '',
         }),
@@ -925,12 +947,27 @@ export const appwriteDbHelpers = {
 
   async updateProgressPhoto(photo: ProgressPhoto): Promise<void> {
     try {
+      // Upload image to Storage if it's still a raw base64 and not yet uploaded
+      let fileId = photo.fileId;
+      if (photo.url?.startsWith('data:') && !fileId) {
+        try {
+          const file = base64ToFile(photo.url, `progress-${photo.id}.jpg`);
+          const uploaded = await storage.createFile(STORAGE_BUCKETS.PROGRESS_PHOTOS, photo.id, file);
+          fileId = uploaded.$id;
+        } catch (storageErr: unknown) {
+          if ((storageErr as { code?: number }).code !== 409) {
+            console.warn('[Photos] Storage upload failed on update:', storageErr);
+          } else {
+            fileId = photo.id; // 409 = already exists, use photo id as fileId
+          }
+        }
+      }
+
       const photoData = {
         fecha: toISO(photo.fecha),
         tipo: photo.tipo,
         datos: JSON.stringify({
-          fileId: photo.fileId,
-          url: photo.url,
+          fileId,
           peso: photo.peso,
           notas: photo.notas || '',
         }),
@@ -1162,13 +1199,19 @@ export const appwriteDbHelpers = {
   mapProgressPhotoDocumentToPhoto(doc: any): ProgressPhoto {
     const datos = doc.datos ? JSON.parse(doc.datos) : {};
 
+    // Reconstruct URL from Appwrite Storage fileId (images are no longer stored as base64 in datos)
+    let url = datos.url;
+    if (datos.fileId && !url) {
+      url = storage.getFileView(STORAGE_BUCKETS.PROGRESS_PHOTOS, datos.fileId).toString();
+    }
+
     return {
       id: doc.$id,
       userId: doc.userId,
       fecha: new Date(doc.fecha),
       tipo: doc.tipo,
       fileId: datos.fileId,
-      url: datos.url,
+      url,
       peso: datos.peso,
       notas: datos.notas,
     };
