@@ -45,9 +45,12 @@ export function useGymContext() {
         setGymActualState(found ?? (currentUser.gymActualNombre
           ? { gymId: currentUser.gymActual, gymNombre: currentUser.gymActualNombre }
           : null));
+      } else {
+        setGymActualState(null);
       }
     });
-  }, [currentUser?.id]);
+  // Re-run when gymActual changes (e.g. after cloud sync restores or clears gym selection)
+  }, [currentUser?.id, currentUser?.gymActual]);
 
   const detectarGymPorUbicacion = async (): Promise<GymInfo | null> => {
     setDetectandoGym(true);

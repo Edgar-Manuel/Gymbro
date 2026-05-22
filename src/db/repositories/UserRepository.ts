@@ -8,11 +8,17 @@ export const UserRepository = {
     async getCurrentUser(): Promise<WithSync<UserProfile> | undefined> {
         if (navigator.onLine && getStorageMode() === 'cloud') {
             try {
-                const user = await appwriteDbHelpers.getCurrentUser();
-                if (user) {
-                    // Update cache
-                    await db.users.put({ ...user, syncStatus: 'synced', lastUpdated: Date.now() });
-                    return { ...user, syncStatus: 'synced' };
+                const cloudUser = await appwriteDbHelpers.getCurrentUser();
+                if (cloudUser) {
+                    // Read local cache BEFORE overwriting to preserve local-only fields
+                    // (gymActual, gymActualNombre, tiempoSesion, etc. are not in Appwrite schema)
+                    const localUsers = await db.users.toArray();
+                    const localUser = localUsers[0];
+                    // Spread order: local first, then cloud overrides shared fields.
+                    // Local-only fields (not present in cloudUser object) survive the spread.
+                    const merged = { ...localUser, ...cloudUser };
+                    await db.users.put({ ...merged, syncStatus: 'synced', lastUpdated: Date.now() });
+                    return { ...merged, syncStatus: 'synced' };
                 }
             } catch (error) {
                 console.warn('Error fetching user from cloud, using cache:', error);

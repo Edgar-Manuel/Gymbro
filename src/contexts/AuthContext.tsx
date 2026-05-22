@@ -71,9 +71,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (cancelled) return;
 
           if (cloudUser) {
-            await dbHelpers.createOrUpdateUser(cloudUser);
+            // Preserve local-only fields (gymActual, gymActualNombre, tiempoSesion, etc.)
+            // that are NOT stored in Appwrite. The store already has the local user loaded
+            // by App.tsx, so we can use it as the base and let cloud override shared fields.
+            const localUser = store.currentUser;
+            const merged = { ...localUser, ...cloudUser };
+            await dbHelpers.createOrUpdateUser(merged);
             if (cancelled) return;
-            store.setCurrentUser(cloudUser);
+            store.setCurrentUser(merged);
           }
         } catch (error) {
           if (!cancelled) console.error('Error sincronizando usuario tras login:', error);
