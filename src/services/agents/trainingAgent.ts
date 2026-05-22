@@ -116,8 +116,19 @@ RESPONDE SIEMPRE en español, con datos concretos y motivación realista.`;
     try {
       // Construir contexto adicional si tenemos información del workout actual
       let contextInfo = '';
+      if (context.user?.physicalAssessment) {
+        const pa = context.user.physicalAssessment;
+        contextInfo += `\n\nEVALUACIÓN FÍSICA DEL USUARIO:
+- Estrategia actual: ${pa.estrategia}
+- Grupos musculares prioritarios: ${pa.prioridades.join(', ')}
+- Objetivo proteína diaria: ${pa.proteinaMeta}g
+- Superávit/déficit calórico: ${pa.caloriasExtra > 0 ? `+${pa.caloriasExtra}` : pa.caloriasExtra} kcal
+- Puntos fuertes: ${pa.puntosFuertes.join(', ')}
+- Áreas de mejora: ${pa.areasMejora.join(', ')}
+Usa esta información para personalizar tus recomendaciones. Prioriza los grupos musculares deficitarios del usuario.`;
+      }
       if (context.currentWorkout) {
-        contextInfo = `\n\nWORKOUT ACTUAL: ${JSON.stringify(context.currentWorkout, null, 2)}`;
+        contextInfo += `\n\nWORKOUT ACTUAL: ${JSON.stringify(context.currentWorkout, null, 2)}`;
       }
       if (context.workoutHistory && context.workoutHistory.length > 0) {
         contextInfo += `\n\nÚLTIMOS ENTRENAMIENTOS: ${JSON.stringify(

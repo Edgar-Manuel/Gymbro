@@ -17,6 +17,15 @@ export interface AgentContext {
     peso: number;
     altura: number;
     edad: number;
+    physicalAssessment?: {
+      estrategia: string;
+      prioridades: string[];
+      proteinaMeta: number;
+      caloriasExtra: number;
+      puntosFuertes: string[];
+      areasMejora: string[];
+      notas: string;
+    };
   };
 
   // Contexto de ejercicios

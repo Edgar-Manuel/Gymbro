@@ -68,6 +68,17 @@ export interface ExerciseKnowledge {
 }
 
 // User Profile
+export interface EvaluacionFisica {
+  fecha: string; // ISO date
+  estrategia: 'volumen' | 'definicion' | 'recomposicion';
+  prioridades: string[]; // muscle groups to prioritize, e.g. ['espalda', 'brazos']
+  proteinaMeta: number; // grams/day
+  caloriasExtra: number; // surplus (+) or deficit (-) in kcal
+  puntosFuertes: string[];
+  areasMejora: string[];
+  notas: string; // full assessment text
+}
+
 export interface UserProfile {
   id: string;
   nombre: string;
@@ -105,6 +116,7 @@ export interface UserProfile {
 
   gymActual?: string;
   gymActualNombre?: string;
+  evaluacionFisica?: EvaluacionFisica;
 }
 
 // Workout Planning

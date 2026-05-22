@@ -147,10 +147,21 @@ RESPONDE SIEMPRE en español, de forma concisa y práctica.`;
 
   async process(query: string, context: AgentContext): Promise<AgentResponse> {
     try {
+      let systemContent = this.systemPrompt;
+      if (context.user?.physicalAssessment) {
+        const pa = context.user.physicalAssessment;
+        systemContent += `\n\nEVALUACIÓN FÍSICA DEL USUARIO:
+- Estrategia: ${pa.estrategia}
+- Objetivo proteína diaria: ${pa.proteinaMeta}g
+- Ajuste calórico: ${pa.caloriasExtra > 0 ? `superávit de +${pa.caloriasExtra}` : `déficit de ${pa.caloriasExtra}`} kcal
+- Áreas de mejora muscular: ${pa.areasMejora.join(', ')}
+Adapta las recomendaciones nutricionales a esta estrategia y objetivos específicos.`;
+      }
+
       const messages: GroqMessage[] = [
         {
           role: 'system',
-          content: this.systemPrompt,
+          content: systemContent,
         },
         {
           role: 'user',

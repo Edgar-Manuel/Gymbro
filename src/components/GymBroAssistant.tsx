@@ -89,6 +89,15 @@ export default function GymBroAssistant() {
           peso: currentUser.peso || currentUser.pesoActual,
           altura: currentUser.altura,
           edad: currentUser.edad,
+          physicalAssessment: currentUser.evaluacionFisica ? {
+            estrategia: currentUser.evaluacionFisica.estrategia,
+            prioridades: currentUser.evaluacionFisica.prioridades,
+            proteinaMeta: currentUser.evaluacionFisica.proteinaMeta,
+            caloriasExtra: currentUser.evaluacionFisica.caloriasExtra,
+            puntosFuertes: currentUser.evaluacionFisica.puntosFuertes,
+            areasMejora: currentUser.evaluacionFisica.areasMejora,
+            notas: currentUser.evaluacionFisica.notas,
+          } : undefined,
         } : undefined,
       };
 

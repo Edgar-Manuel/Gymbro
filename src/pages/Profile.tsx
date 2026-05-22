@@ -5,15 +5,122 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { User, Scale, TrendingUp, Target, Moon, Sun, Info, CheckCircle, Cloud, CloudOff, Mail, Flame, Camera, Bell, BellOff, X, ChevronLeft, ChevronRight, Smartphone } from 'lucide-react';
+import { User, Scale, TrendingUp, Target, Moon, Sun, Info, CheckCircle, Cloud, CloudOff, Mail, Flame, Camera, Bell, BellOff, X, ChevronLeft, ChevronRight, Smartphone, Dumbbell, ChevronDown, ChevronUp } from 'lucide-react';
 import BodyMuscleMap from '@/components/BodyMuscleMap';
 import InjuryPanel from '@/components/InjuryPanel';
 import { useState, useEffect, useRef } from 'react';
 import { dbHelpers } from '@/db';
-import type { Somatotipo, ProgressPhoto } from '@/types';
+import type { Somatotipo, ProgressPhoto, EvaluacionFisica } from '@/types';
 import { notificationManager } from '@/utils/notificationManager';
 import { ID } from 'appwrite';
 import { PERFILES_SOMATOTIPO, calcularPlanNutricional } from '@/utils/nutritionCalculator';
+import { Textarea } from '@/components/ui/textarea';
+
+const ESTRATEGIAS = ['volumen', 'recomposicion', 'definicion'] as const;
+const PRIORIDADES_OPCIONES = ['pecho', 'espalda', 'hombros', 'brazos', 'core', 'piernas', 'glúteos', 'trapecio'];
+
+function AssessmentForm({
+  initial, notas, onNotasChange, onSave, onCancel,
+}: {
+  initial?: EvaluacionFisica;
+  notas: string;
+  onNotasChange: (v: string) => void;
+  onSave: (a: EvaluacionFisica) => void;
+  onCancel: () => void;
+}) {
+  const [estrategia, setEstrategia] = useState<EvaluacionFisica['estrategia']>(initial?.estrategia ?? 'recomposicion');
+  const [prioridades, setPrioridades] = useState<string[]>(initial?.prioridades ?? []);
+  const [proteinaMeta, setProteinaMeta] = useState(initial?.proteinaMeta ?? 150);
+  const [caloriasExtra, setCaloriasExtra] = useState(initial?.caloriasExtra ?? 250);
+  const [puntosFuertes, setPuntosFuertes] = useState(initial?.puntosFuertes?.join(', ') ?? '');
+  const [areasMejora, setAreasMejora] = useState(initial?.areasMejora?.join(', ') ?? '');
+
+  const togglePrioridad = (p: string) =>
+    setPrioridades(prev => prev.includes(p) ? prev.filter(x => x !== p) : [...prev, p]);
+
+  const handleSubmit = () => {
+    onSave({
+      fecha: new Date().toISOString(),
+      estrategia,
+      prioridades,
+      proteinaMeta,
+      caloriasExtra,
+      puntosFuertes: puntosFuertes.split(',').map(s => s.trim()).filter(Boolean),
+      areasMejora: areasMejora.split(',').map(s => s.trim()).filter(Boolean),
+      notas,
+    });
+  };
+
+  return (
+    <div className="space-y-4 text-sm">
+      {/* Estrategia */}
+      <div>
+        <Label className="mb-1.5 block">Estrategia</Label>
+        <div className="grid grid-cols-3 gap-2">
+          {ESTRATEGIAS.map(e => (
+            <button key={e} type="button" onClick={() => setEstrategia(e)}
+              className={`py-2 px-3 rounded-lg border text-xs font-semibold capitalize transition-all ${
+                estrategia === e ? 'bg-indigo-100 border-indigo-400 text-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-200' : 'border-border hover:border-primary/40'
+              }`}>
+              {e === 'recomposicion' ? 'Recomposición' : e.charAt(0).toUpperCase() + e.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Prioridades musculares */}
+      <div>
+        <Label className="mb-1.5 block">Músculos prioritarios</Label>
+        <div className="flex flex-wrap gap-1.5">
+          {PRIORIDADES_OPCIONES.map(p => (
+            <button key={p} type="button" onClick={() => togglePrioridad(p)}
+              className={`px-2.5 py-1 rounded-full text-xs font-medium border transition-all capitalize ${
+                prioridades.includes(p) ? 'bg-orange-100 border-orange-400 text-orange-800 dark:bg-orange-950/40 dark:text-orange-200' : 'border-border hover:border-primary/40'
+              }`}>
+              {p}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Objetivos numéricos */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label htmlFor="proteinaMeta" className="mb-1 block">Proteína objetivo (g/día)</Label>
+          <Input id="proteinaMeta" type="number" value={proteinaMeta} onChange={e => setProteinaMeta(Number(e.target.value))} />
+        </div>
+        <div>
+          <Label htmlFor="caloriasExtra" className="mb-1 block">Ajuste calórico (kcal)</Label>
+          <Input id="caloriasExtra" type="number" value={caloriasExtra} onChange={e => setCaloriasExtra(Number(e.target.value))} placeholder="+250 superávit, -300 déficit" />
+        </div>
+      </div>
+
+      {/* Puntos fuertes / áreas de mejora */}
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label htmlFor="puntosFuertes" className="mb-1 block">Puntos fuertes (separados por coma)</Label>
+          <Input id="puntosFuertes" value={puntosFuertes} onChange={e => setPuntosFuertes(e.target.value)} placeholder="cintura, hombros…" />
+        </div>
+        <div>
+          <Label htmlFor="areasMejora" className="mb-1 block">Áreas de mejora (separados por coma)</Label>
+          <Input id="areasMejora" value={areasMejora} onChange={e => setAreasMejora(e.target.value)} placeholder="pecho, brazos…" />
+        </div>
+      </div>
+
+      {/* Notas / evaluación completa */}
+      <div>
+        <Label htmlFor="notasEval" className="mb-1 block">Notas completas de la evaluación</Label>
+        <Textarea id="notasEval" rows={6} value={notas} onChange={e => onNotasChange(e.target.value)}
+          placeholder="Pega aquí la evaluación completa (de un coach, de una IA, etc.)" />
+      </div>
+
+      <div className="flex gap-3">
+        <Button variant="ghost" className="flex-1" onClick={onCancel}>Cancelar</Button>
+        <Button className="flex-1" onClick={handleSubmit}>Guardar evaluación</Button>
+      </div>
+    </div>
+  );
+}
 
 export default function Profile() {
   const { currentUser, setCurrentUser, isDarkMode, toggleDarkMode } = useAppStore();
@@ -27,6 +134,10 @@ export default function Profile() {
   const photoInputRef = useRef<HTMLInputElement>(null);
   const [pendingPhotoUrl, setPendingPhotoUrl] = useState<string | null>(null);
   const [photoType, setPhotoType] = useState<ProgressPhoto['tipo']>('frontal');
+
+  // Physical assessment
+  const [showAssessment, setShowAssessment] = useState(false);
+  const [assessmentNotas, setAssessmentNotas] = useState('');
 
   // Notifications
   const [notifSettings, setNotifSettings] = useState(notificationManager.getSettings());
@@ -169,6 +280,14 @@ export default function Profile() {
       });
     }
     setIsEditing(false);
+  };
+
+  const handleSaveAssessment = async (assessment: EvaluacionFisica) => {
+    if (!currentUser) return;
+    const updated = { ...currentUser, evaluacionFisica: assessment };
+    setCurrentUser(updated);
+    try { await dbHelpers.updateUser?.(updated); } catch {}
+    setShowAssessment(false);
   };
 
   // Calcular métricas
@@ -577,6 +696,101 @@ export default function Profile() {
             </div>
           )}
         </CardContent>
+      </Card>
+
+      {/* Evaluación Física */}
+      <Card className="mb-6">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Dumbbell className="w-5 h-5 text-indigo-500" />
+              <CardTitle>Evaluación Física</CardTitle>
+            </div>
+            <Button size="sm" variant="outline" onClick={() => {
+              setAssessmentNotas(currentUser?.evaluacionFisica?.notas ?? '');
+              setShowAssessment(v => !v);
+            }}>
+              {showAssessment ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              {currentUser?.evaluacionFisica ? 'Editar' : 'Añadir'}
+            </Button>
+          </div>
+          <CardDescription>
+            {currentUser?.evaluacionFisica
+              ? `Estrategia: ${currentUser.evaluacionFisica.estrategia} · ${currentUser.evaluacionFisica.prioridades.length} áreas prioritarias`
+              : 'Añade tu análisis físico para que GymBro personalice tus entrenamientos'}
+          </CardDescription>
+        </CardHeader>
+
+        {currentUser?.evaluacionFisica && !showAssessment && (
+          <CardContent className="space-y-3 text-sm">
+            {/* Strategy badge */}
+            <div className="flex items-center gap-2 flex-wrap">
+              {(['volumen', 'recomposicion', 'definicion'] as const).map(s => (
+                <span key={s} className={`px-3 py-1 rounded-full text-xs font-semibold capitalize border ${
+                  currentUser.evaluacionFisica!.estrategia === s
+                    ? 'bg-indigo-100 border-indigo-400 text-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-200'
+                    : 'border-border text-muted-foreground'
+                }`}>{s === 'recomposicion' ? 'Recomposición' : s.charAt(0).toUpperCase() + s.slice(1)}</span>
+              ))}
+            </div>
+
+            {/* Priority muscles */}
+            {currentUser.evaluacionFisica.prioridades.length > 0 && (
+              <div>
+                <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide font-semibold">Músculos prioritarios</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {currentUser.evaluacionFisica.prioridades.map(p => (
+                    <span key={p} className="px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/30 text-orange-800 dark:text-orange-200 text-xs font-medium capitalize">{p}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Targets */}
+            <div className="grid grid-cols-2 gap-2">
+              <div className="bg-muted rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Proteína objetivo</p>
+                <p className="font-bold text-lg">{currentUser.evaluacionFisica.proteinaMeta}g/día</p>
+              </div>
+              <div className="bg-muted rounded-lg p-3">
+                <p className="text-xs text-muted-foreground">Ajuste calórico</p>
+                <p className={`font-bold text-lg ${currentUser.evaluacionFisica.caloriasExtra >= 0 ? 'text-green-600' : 'text-red-500'}`}>
+                  {currentUser.evaluacionFisica.caloriasExtra >= 0 ? '+' : ''}{currentUser.evaluacionFisica.caloriasExtra} kcal
+                </p>
+              </div>
+            </div>
+
+            {/* Strengths & improvements */}
+            {currentUser.evaluacionFisica.puntosFuertes.length > 0 && (
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <p className="font-semibold text-green-700 dark:text-green-400 mb-1">Puntos fuertes</p>
+                  <ul className="space-y-0.5 text-muted-foreground">
+                    {currentUser.evaluacionFisica.puntosFuertes.map((p, i) => <li key={i}>· {p}</li>)}
+                  </ul>
+                </div>
+                <div>
+                  <p className="font-semibold text-orange-700 dark:text-orange-400 mb-1">Áreas de mejora</p>
+                  <ul className="space-y-0.5 text-muted-foreground">
+                    {currentUser.evaluacionFisica.areasMejora.map((p, i) => <li key={i}>· {p}</li>)}
+                  </ul>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        )}
+
+        {showAssessment && (
+          <CardContent className="space-y-4">
+            <AssessmentForm
+              initial={currentUser?.evaluacionFisica}
+              notas={assessmentNotas}
+              onNotasChange={setAssessmentNotas}
+              onSave={handleSaveAssessment}
+              onCancel={() => setShowAssessment(false)}
+            />
+          </CardContent>
+        )}
       </Card>
 
       {/* Objetivos */}
