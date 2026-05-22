@@ -383,6 +383,7 @@ export default function RoutineGenerator() {
           equipamiento: currentUser.equipamiento as string[],
           lesiones: currentUser.lesiones,
           diasDisponibles,
+          evaluacionFisica: currentUser.evaluacionFisica,
         },
         historial,
       );
@@ -507,6 +508,20 @@ export default function RoutineGenerator() {
               {currentUser.lesiones && currentUser.lesiones.length > 0 && (
                 <div className="col-span-2 text-destructive">
                   Lesiones: {currentUser.lesiones.join(', ')}
+                </div>
+              )}
+              {currentUser.evaluacionFisica && (
+                <div className="col-span-2 mt-1 pt-2 border-t space-y-1">
+                  <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
+                    <Brain className="w-3 h-3" /> Evaluación física activa
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Estrategia: <span className="font-medium capitalize">{currentUser.evaluacionFisica.estrategia}</span>
+                    {' · '}Prioritarios: <span className="font-medium">{currentUser.evaluacionFisica.prioridades.join(', ')}</span>
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    La IA adaptará el volumen y ejercicios a tus áreas de mejora específicas
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -677,6 +692,17 @@ export default function RoutineGenerator() {
                     </div>
                   )}
                 </div>
+                {currentUser.evaluacionFisica && (
+                  <div className="mt-2 pt-2 border-t">
+                    <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 flex items-center gap-1 mb-1">
+                      <Brain className="w-3 h-3" /> Evaluación física — activa
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      Estrategia <span className="font-medium capitalize">{currentUser.evaluacionFisica.estrategia}</span>
+                      {' · '}Volumen extra en: <span className="font-medium">{currentUser.evaluacionFisica.prioridades.join(', ')}</span>
+                    </p>
+                  </div>
+                )}
               </div>
 
               <Button

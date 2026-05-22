@@ -179,6 +179,15 @@ export interface PerfilFullWIA {
   equipamiento: string[];
   lesiones?: string[];
   diasDisponibles: number;
+  evaluacionFisica?: {
+    estrategia: string;
+    prioridades: string[];
+    proteinaMeta: number;
+    caloriasExtra: number;
+    puntosFuertes: string[];
+    areasMejora: string[];
+    notas: string;
+  };
 }
 
 export async function generarRutinaFullWconIA(
@@ -242,12 +251,30 @@ AJUSTES POR NIVEL:
 
 HISTORIAL DE ENTRENAMIENTOS RECIENTES (últimas sesiones):
 ${historialTexto}
+${perfil.evaluacionFisica ? `
+EVALUACIÓN FÍSICA PERSONALIZADA DEL ATLETA:
+- Estrategia actual: ${perfil.evaluacionFisica.estrategia}
+- Grupos musculares PRIORITARIOS (necesitan más volumen y ejercicios): ${perfil.evaluacionFisica.prioridades.join(', ')}
+- Puntos fuertes (ya desarrollados): ${perfil.evaluacionFisica.puntosFuertes.join(', ')}
+- Áreas de mejora (añadir ejercicios extra aquí): ${perfil.evaluacionFisica.areasMejora.join(', ')}
+- Objetivo proteína diaria: ${perfil.evaluacionFisica.proteinaMeta}g | Ajuste calórico: ${perfil.evaluacionFisica.caloriasExtra > 0 ? '+' : ''}${perfil.evaluacionFisica.caloriasExtra} kcal
 
+REGLAS DE PERSONALIZACIÓN BASADAS EN LA EVALUACIÓN:
+- En los días donde entrenes grupos PRIORITARIOS, añade 1 ejercicio extra de aislamiento para esos grupos
+- Prioriza los grupos de "áreas de mejora" con el primer slot de accesorios de cada día relevante
+- Los grupos "puntos fuertes" mantienen volumen estándar (no necesitan énfasis extra)
+- La estrategia "${perfil.evaluacionFisica.estrategia}" implica: ${
+    perfil.evaluacionFisica.estrategia === 'volumen' ? 'superávit calórico, maximizar volumen de entrenamiento (añade series donde puedas)' :
+    perfil.evaluacionFisica.estrategia === 'definicion' ? 'déficit calórico, mantener masa muscular con volumen moderado y descansos algo más cortos' :
+    'normocalórico o superávit muy ligero, maximizar músculo minimizando grasa — equilibrio entre volumen e intensidad'
+  }
+` : ''}
 INSTRUCCIONES DE SELECCIÓN:
 1. Analiza el historial y VARÍA los ejercicios respecto a las sesiones recientes
 2. Respeta las lesiones: elimina ejercicios que carguen las zonas afectadas
-3. Prioriza grupos musculares menos entrenados recientemente
+3. Prioriza grupos musculares menos entrenados recientemente Y los marcados como prioritarios en la evaluación
 4. CADA día debe golpear todos los músculos del split de ese día (no descuides ningún grupo)
+5. Si hay evaluación física, aplica las reglas de personalización al seleccionar ejercicios
 
 CATÁLOGO EXACTO (usa EXACTAMENTE estos nombres, respetando mayúsculas/minúsculas):
 PECHO: "Press de Banca con Barra", "Press de Banca con Mancuernas", "Press Inclinado con Barra", "Press Inclinado con Mancuernas", "Aperturas con Mancuernas", "Aperturas en Polea", "Fondos en Paralelas"

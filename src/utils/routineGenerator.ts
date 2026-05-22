@@ -104,19 +104,27 @@ export function generarRutinaPersonalizada(
     if (user.nivel === 'avanzado') nivelEjercicios += 1;
     if (user.nivel === 'principiante') nivelEjercicios = Math.max(1, nivelEjercicios - 1);
 
+    // Boost extra exercises for priority muscle groups from assessment
+    const prioridades = user.evaluacionFisica?.prioridades ?? [];
+    const hasPriorityGroup = prioridades.length > 0 && dia.grupos.some(g =>
+      prioridades.some(p => g.toLowerCase().includes(p.toLowerCase()) || p.toLowerCase().includes(g.toLowerCase()))
+    );
+    if (hasPriorityGroup) nivelEjercicios = Math.min(nivelEjercicios + 1, 5);
+
     const ejercicios = seleccionarEjerciciosParaDia(
       dia.grupos,
       exercises,
       user,
-      nivelEjercicios
+      nivelEjercicios,
+      prioridades
     );
 
     const ejerciciosEnRutina: EjercicioEnRutina[] = ejercicios.map(ex => ({
       ejercicioId: ex.id,
       ejercicio: ex,
-      seriesObjetivo: determinarSeries(ex, user.objetivo, user.somatotipo),
+      seriesObjetivo: determinarSeries(ex, user.objetivo, user.somatotipo, prioridades),
       repsObjetivo: determinarReps(ex, user.objetivo, user.somatotipo),
-      pesoSugerido: undefined as number | undefined, 
+      pesoSugerido: undefined as number | undefined,
       notas: ex.tecnica.consejosClave[0] || 'Enfócate en la técnica'
     }));
 
@@ -156,11 +164,22 @@ function seleccionarEjerciciosParaDia(
   gruposMusculares: GrupoMuscular[],
   todosEjercicios: ExerciseKnowledge[],
   user: UserProfile,
-  ejerciciosPorGrupo: number
+  ejerciciosPorGrupo: number,
+  prioridades: string[] = []
 ): ExerciseKnowledge[] {
+  // Process priority groups first so they get the extra slot
+  const gruposOrdenados = [...gruposMusculares].sort((a, b) => {
+    const aPrio = prioridades.some(p => a.toLowerCase().includes(p.toLowerCase()) || p.toLowerCase().includes(a.toLowerCase()));
+    const bPrio = prioridades.some(p => b.toLowerCase().includes(p.toLowerCase()) || p.toLowerCase().includes(b.toLowerCase()));
+    if (aPrio && !bPrio) return -1;
+    if (!aPrio && bPrio) return 1;
+    return 0;
+  });
   const ejerciciosSeleccionados: ExerciseKnowledge[] = [];
 
-  gruposMusculares.forEach(grupo => {
+  gruposOrdenados.forEach(grupo => {
+    const isPriority = prioridades.some(p => grupo.toLowerCase().includes(p.toLowerCase()) || p.toLowerCase().includes(grupo.toLowerCase()));
+    const slotsPorGrupo = isPriority ? Math.min(ejerciciosPorGrupo + 1, 5) : ejerciciosPorGrupo;
     // Filtrar ejercicios disponibles para este grupo
     const disponibles = todosEjercicios.filter(ex => {
       // Debe ser del grupo muscular correcto
@@ -214,7 +233,7 @@ function seleccionarEjerciciosParaDia(
         ejerciciosSeleccionados.push(vertical);
         seleccionados++;
       }
-      if (horizontal && seleccionados < ejerciciosPorGrupo) {
+      if (horizontal && seleccionados < slotsPorGrupo) {
         ejerciciosSeleccionados.push(horizontal);
         seleccionados++;
       }
@@ -222,7 +241,7 @@ function seleccionarEjerciciosParaDia(
 
     // Completar con los mejores ejercicios restantes
     for (const ejercicio of ordenados) {
-      if (seleccionados >= ejerciciosPorGrupo) break;
+      if (seleccionados >= slotsPorGrupo) break;
       if (!ejerciciosSeleccionados.includes(ejercicio)) {
         ejerciciosSeleccionados.push(ejercicio);
         seleccionados++;
@@ -236,7 +255,7 @@ function seleccionarEjerciciosParaDia(
 /**
  * Determina el número de series según el ejercicio, objetivo y somatotipo
  */
-function determinarSeries(ejercicio: ExerciseKnowledge, objetivo: string, somatotipo?: string): number {
+function determinarSeries(ejercicio: ExerciseKnowledge, objetivo: string, somatotipo?: string, prioridades: string[] = []): number {
   const config = OBJETIVO_CONFIG[objetivo as keyof typeof OBJETIVO_CONFIG];
   let [min, max] = config.series;
 
@@ -249,13 +268,20 @@ function determinarSeries(ejercicio: ExerciseKnowledge, objetivo: string, somato
     min = Math.min(max, min + 1);
   }
 
+  // Priority groups from assessment get an extra set
+  const isPriority = prioridades.some(p =>
+    ejercicio.grupoMuscular?.toLowerCase().includes(p.toLowerCase()) ||
+    p.toLowerCase().includes(ejercicio.grupoMuscular?.toLowerCase() ?? '')
+  );
+  if (isPriority) max = Math.min(max + 1, 5);
+
   // Ejercicios tier S y compuestos: más series
   if (ejercicio.tier === 'S' || ejercicio.categoria === 'compuesto') {
     return max;
   }
 
   // Ejercicios de aislamiento: menos series
-  return min;
+  return isPriority ? max : min;
 }
 
 /**
