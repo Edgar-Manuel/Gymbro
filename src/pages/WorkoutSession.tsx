@@ -229,8 +229,11 @@ export default function WorkoutSession() {
 
       // Pesos representativos de la primera serie
       const firstSerie = lastLog.series[0];
-      setPesoSugerido(firstSerie.peso);
-      setPeso(firstSerie.peso.toString());
+      // Apply wellness modifier: tired → -10%, energetic → +5%, normal → no change
+      const wellnessModifier = wellnessScore === 2 ? 0.90 : wellnessScore === 5 ? 1.05 : 1.0;
+      const pesoAjustado = Math.round(firstSerie.peso * wellnessModifier * 2) / 2; // round to nearest 0.5 kg
+      setPesoSugerido(pesoAjustado);
+      setPeso(pesoAjustado.toString());
       setPreviousRef({
         peso: firstSerie.peso,
         reps: firstSerie.repeticiones,
@@ -243,7 +246,7 @@ export default function WorkoutSession() {
       console.error('Error cargando peso sugerido:', error);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentUser, selectedDay, currentExerciseIndex]);
+  }, [currentUser, selectedDay, currentExerciseIndex, wellnessScore]);
 
   // Cargar peso sugerido cuando cambia el ejercicio
   useEffect(() => {
@@ -353,6 +356,9 @@ export default function WorkoutSession() {
       completado: false
     };
 
+    // Adjust default RIR based on check-in: tired → further from failure, energetic → push harder
+    const defaultRir = score === 2 ? 4 : score === 5 ? 1 : 2;
+    setRir(defaultRir);
     startWorkout(workoutLog);
     setStartTime(new Date());
     setHasStarted(true);
@@ -889,6 +895,19 @@ export default function WorkoutSession() {
       </div>
 
       <div className="container mx-auto p-4 max-w-4xl">
+        {/* Wellness indicator */}
+        {wellnessScore === 2 && (
+          <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-300 dark:border-orange-700 text-orange-800 dark:text-orange-200 text-xs font-medium">
+            <span>😴</span>
+            <span>Modo recuperación: pesos −10% · RIR 4</span>
+          </div>
+        )}
+        {wellnessScore === 5 && (
+          <div className="mb-3 flex items-center gap-2 px-3 py-2 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-300 dark:border-green-700 text-green-800 dark:text-green-200 text-xs font-medium">
+            <span>💪</span>
+            <span>Modo intenso: pesos +5% · RIR 1</span>
+          </div>
+        )}
         {/* Tarjeta del ejercicio actual */}
         <Card className="mb-4 border-primary">
           <CardHeader>
