@@ -17,6 +17,7 @@ import type {
   CardioSession,
   MachinePhoto,
 } from '@/types';
+import { populateRoutineExercises } from '@/utils/fullwConverter';
 
 /**
  * Convierte un valor de fecha a ISO 8601 string de forma defensiva.
@@ -1030,7 +1031,7 @@ export const appwriteDbHelpers = {
   mapRoutineDocumentToRutina(doc: any): RutinaSemanal {
     const datos = doc.datos ? JSON.parse(doc.datos) : {};
 
-    return {
+    const rutina: RutinaSemanal = {
       id: doc.$id,
       userId: doc.userId,
       nombre: doc.nombre,
@@ -1038,11 +1039,13 @@ export const appwriteDbHelpers = {
       nivel: datos.nivel,
       diasPorSemana: datos.diasPorSemana,
       diasRutina: datos.diasRutina || [],
-      dias: datos.diasRutina || [], // Alias
+      dias: datos.diasRutina || [],
       duracionTotal: datos.duracionTotal,
       activa: doc.activa,
       fechaCreacion: new Date(doc.fechaCreacion),
     };
+
+    return populateRoutineExercises(rutina);
   },
 
   /**
