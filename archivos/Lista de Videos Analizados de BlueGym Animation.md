@@ -212,3 +212,8 @@ A continuación, se presenta la lista completa de **28 videos** del canal de You
 | Cómo hacer Elevaciones Laterales en Polea | hombros | [Ver Video](https://www.youtube.com/watch?v=SaoW-iSUxfk) |
 | Mejora tu rutina de Hombros | hombros | [Ver Video](https://www.youtube.com/watch?v=gTCHxo3fv60) |
 | El ejercicio más infravalorado de HOMBRO | hombros | [Ver Video](https://www.youtube.com/watch?v=a1Ww8Isoad4) |
+
+| Entrenar OBLICUOS: Rotación de torso en Polea | core | [Ver Video](https://www.youtube.com/watch?v=KHVk3mGld4g) |
+| Así crecen tus Oblicuos | core | [Ver Video](https://www.youtube.com/watch?v=tHhcPXB6sck) |
+| Entrena Espalda completa con BANDAS | espalda | [Ver Video](https://www.youtube.com/watch?v=5i0XniVxFwI) |
+| Rutina de espalda con BANDA ELÁSTICA | espalda | [Ver Video](https://www.youtube.com/watch?v=bgI-4Q-NV2k) |

@@ -847,6 +847,38 @@ export const exerciseVideos: ExerciseVideo[] = [
     category: 'hombros',
     relatedExercises: [],
   },
+  {
+    id: 'entrenar-oblicuos-rotacion-de-torso-en-polea',
+    title: 'Entrenar OBLICUOS: Rotación de torso en Polea',
+    youtubeId: getYouTubeId('https://www.youtube.com/watch?v=KHVk3mGld4g'),
+    url: 'https://www.youtube.com/watch?v=KHVk3mGld4g',
+    category: 'core',
+    relatedExercises: [],
+  },
+  {
+    id: 'asi-crecen-tus-oblicuos',
+    title: 'Así crecen tus Oblicuos',
+    youtubeId: getYouTubeId('https://www.youtube.com/watch?v=tHhcPXB6sck'),
+    url: 'https://www.youtube.com/watch?v=tHhcPXB6sck',
+    category: 'core',
+    relatedExercises: [],
+  },
+  {
+    id: 'entrena-espalda-completa-con-bandas',
+    title: 'Entrena Espalda completa con BANDAS',
+    youtubeId: getYouTubeId('https://www.youtube.com/watch?v=5i0XniVxFwI'),
+    url: 'https://www.youtube.com/watch?v=5i0XniVxFwI',
+    category: 'espalda',
+    relatedExercises: ['dominadas-pronas'],
+  },
+  {
+    id: 'rutina-de-espalda-con-banda-elastica',
+    title: 'Rutina de espalda con BANDA ELÁSTICA',
+    youtubeId: getYouTubeId('https://www.youtube.com/watch?v=bgI-4Q-NV2k'),
+    url: 'https://www.youtube.com/watch?v=bgI-4Q-NV2k',
+    category: 'espalda',
+    relatedExercises: ['dominadas-pronas'],
+  },
 ];
 
 // Helper functions
