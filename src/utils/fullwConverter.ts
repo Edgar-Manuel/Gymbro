@@ -372,14 +372,29 @@ function resolveExercise(ejercicioId: string): ExerciseKnowledge | undefined {
   return map.get(ejercicioId);
 }
 
+/** Convierte un slug (p.ej. "sentadilla-bulgara-split") en un nombre legible. */
+function unslugify(slug: string): string {
+  return slug.replace(/-/g, ' ').replace(/\b[a-z]/g, c => c.toUpperCase()).trim();
+}
+
 export function populateRoutineExercises(rutina: RutinaSemanal): RutinaSemanal {
   const dias = (rutina.diasRutina || rutina.dias || []).map(dia => ({
     ...dia,
     ejercicios: (dia.ejercicios || []).map(ej => {
       if (ej.ejercicio?.nombre) return ej;
       const found = resolveExercise(ej.ejercicioId);
-      if (!found) return ej;
-      return { ...ej, ejercicio: found };
+      if (found) return { ...ej, ejercicio: found };
+      // Sin coincidencia en el catálogo: genera un stub con nombre legible
+      // derivado del id para que la UI nunca muestre un nombre vacío.
+      const nombre = unslugify(ej.ejercicioId);
+      return {
+        ...ej,
+        ejercicio: {
+          ...makeStubExercise(nombre, 0),
+          id: ej.ejercicioId,
+          nombre,
+        },
+      };
     }),
   }));
 
