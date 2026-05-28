@@ -3,6 +3,7 @@ import { appwriteDbHelpers } from '../appwriteDb';
 import type { RutinaSemanal } from '@/types';
 import type { WithSync } from '../types';
 import { getStorageMode } from '../config';
+import { populateRoutineExercises } from '@/utils/fullwConverter';
 
 export const RoutineRepository = {
     async getActiveRoutine(userId: string): Promise<WithSync<RutinaSemanal> | undefined> {
@@ -14,14 +15,12 @@ export const RoutineRepository = {
                     const routine = await appwriteDbHelpers.getActiveRoutine(userId);
                     if (routine) {
                         await db.rutinas.put({ ...routine, syncStatus: 'synced', lastUpdated: Date.now() });
-                        return { ...routine, syncStatus: 'synced' };
+                        return { ...populateRoutineExercises(routine), syncStatus: 'synced' };
                     }
                 } catch (error) {
                     console.warn('[Repo] Error fetching active routine from cloud:', error);
                 }
             } else if (local.syncStatus === 'synced') {
-                // Only overwrite with cloud version if local is already synced.
-                // Never overwrite pending_create/pending_update — those haven't reached Appwrite yet.
                 appwriteDbHelpers.getActiveRoutine(userId)
                     .then(routine => {
                         if (routine) db.rutinas.put({ ...routine, syncStatus: 'synced', lastUpdated: Date.now() });
@@ -30,7 +29,7 @@ export const RoutineRepository = {
             }
         }
 
-        return local;
+        return local ? populateRoutineExercises(local) as WithSync<RutinaSemanal> : undefined;
     },
 
     async getUserRoutines(userId: string) {
@@ -41,12 +40,11 @@ export const RoutineRepository = {
                 try {
                     const routines = await appwriteDbHelpers.getUserRoutines(userId);
                     await db.rutinas.bulkPut(routines.map(r => ({ ...r, syncStatus: 'synced' as const, lastUpdated: Date.now() })));
-                    return routines;
+                    return routines.map(populateRoutineExercises);
                 } catch (error) {
                     console.warn('[Repo] Error fetching routines from cloud:', error);
                 }
             } else {
-                // Only refresh routines that are already synced — don't overwrite pending local changes
                 const hasPending = local.some(r => r.syncStatus !== 'synced');
                 if (!hasPending) {
                     appwriteDbHelpers.getUserRoutines(userId)
@@ -56,7 +54,7 @@ export const RoutineRepository = {
             }
         }
 
-        return local;
+        return local.map(r => populateRoutineExercises(r) as typeof r);
     },
 
     async createRoutine(rutina: RutinaSemanal) {

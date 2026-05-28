@@ -896,7 +896,7 @@ export default function WorkoutSession() {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
                   <CardTitle className="text-2xl">
-                    {ejercicioActual.ejercicio?.nombre}
+                    {ejercicioActual.ejercicio?.nombre ?? ejercicioActual.ejercicioId?.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                   </CardTitle>
                   {ejercicioActual.ejercicio?.tecnica && (
                     <button
