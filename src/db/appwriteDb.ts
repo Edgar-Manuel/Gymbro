@@ -17,7 +17,7 @@ import type {
   CardioSession,
   MachinePhoto,
 } from '@/types';
-import { populateRoutineExercises } from '@/utils/fullwConverter';
+import { populateRoutineExercises, slimExerciseForStorage } from '@/utils/fullwConverter';
 
 /**
  * Convierte un valor de fecha a ISO 8601 string de forma defensiva.
@@ -234,8 +234,9 @@ export const appwriteDbHelpers = {
           diasPorSemana: rutina.diasPorSemana,
           diasRutina: (rutina.diasRutina || rutina.dias || []).map(dia => ({
             ...dia,
-            // Strip full ExerciseKnowledge objects — only ejercicioId is needed to reload
-            ejercicios: (dia.ejercicios || []).map(({ ejercicio: _ej, ...rest }) => rest),
+            // Conserva los campos ligeros (incl. nombre); los pesados (técnica,
+            // imágenes, variantes) se rehidratan del catálogo al cargar.
+            ejercicios: (dia.ejercicios || []).map(slimExerciseForStorage),
           })),
           duracionTotal: rutina.duracionTotal,
         }),
@@ -270,7 +271,7 @@ export const appwriteDbHelpers = {
           diasPorSemana: rutina.diasPorSemana,
           diasRutina: (rutina.diasRutina || rutina.dias || []).map(dia => ({
             ...dia,
-            ejercicios: (dia.ejercicios || []).map(({ ejercicio: _ej, ...rest }) => rest),
+            ejercicios: (dia.ejercicios || []).map(slimExerciseForStorage),
           })),
           duracionTotal: rutina.duracionTotal,
         }),

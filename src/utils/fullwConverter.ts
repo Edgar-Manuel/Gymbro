@@ -339,7 +339,13 @@ function makeRoutineId(routineBaseId: string, userId: string): string {
   return combined.slice(0, 36);
 }
 
-// ─── Re-population of exercise data after DB load ───────────────────────────
+// ─── Persistencia: adelgazar / rehidratar ejercicios ────────────────────────
+//
+// Al guardar una rutina conservamos los campos ligeros del ejercicio
+// (incluido `nombre`, que es la fuente de verdad del nombre mostrado) y
+// descartamos solo los pesados (técnica, imágenes, variantes), que se
+// rehidratan desde el catálogo al cargar. Así el nombre original sobrevive
+// EXACTO al round-trip y la base de datos se mantiene pequeña.
 
 const _slugToExercise = new Map<string, ExerciseKnowledge>();
 
@@ -355,11 +361,14 @@ function getSlugMap(): Map<string, ExerciseKnowledge> {
     const slug = makeExerciseId(nameLower);
     if (_slugToExercise.has(slug)) continue;
     const base = exercisesData.find(e => e.id === baseId);
-    const displayName = nameLower.replace(/\b[a-z]/g, c => c.toUpperCase());
+    // Nombre de respaldo (solo se usa para rutinas antiguas sin nombre
+    // persistido): el nombre canónico del catálogo, nunca el de la clave
+    // title-cased (que rompería acentos y mayúsculas — "JalóN", "De"...).
+    const fallbackName = base?.nombre ?? unslugify(slug);
     _slugToExercise.set(slug, {
-      ...(base ?? makeStubExercise(displayName, stubIdx++)),
+      ...(base ?? makeStubExercise(fallbackName, stubIdx++)),
       id: slug,
-      nombre: displayName,
+      nombre: fallbackName,
       baseExerciseId: baseId,
     });
   }
@@ -377,23 +386,48 @@ function unslugify(slug: string): string {
   return slug.replace(/-/g, ' ').replace(/\b[a-z]/g, c => c.toUpperCase()).trim();
 }
 
+/**
+ * Devuelve el ejercicio con solo los campos ligeros, listo para serializar al
+ * guardar la rutina. Conserva `nombre` (fuente de verdad) y descarta los
+ * campos pesados, que se reconstruyen con `populateRoutineExercises` al cargar.
+ */
+export function slimExerciseForStorage(ej: EjercicioEnRutina): EjercicioEnRutina {
+  if (!ej.ejercicio) return ej;
+  const {
+    tecnica: _tecnica,
+    imagenes: _imagenes,
+    variantes: _variantes,
+    ...slim
+  } = ej.ejercicio;
+  return { ...ej, ejercicio: slim as ExerciseKnowledge };
+}
+
 export function populateRoutineExercises(rutina: RutinaSemanal): RutinaSemanal {
   const dias = (rutina.diasRutina || rutina.dias || []).map(dia => ({
     ...dia,
     ejercicios: (dia.ejercicios || []).map(ej => {
-      if (ej.ejercicio?.nombre) return ej;
+      // El nombre persistido en la rutina es la fuente de verdad.
+      const persistedName = ej.ejercicio?.nombre;
       const found = resolveExercise(ej.ejercicioId);
-      if (found) return { ...ej, ejercicio: found };
-      // Sin coincidencia en el catálogo: genera un stub con nombre legible
-      // derivado del id para que la UI nunca muestre un nombre vacío.
-      const nombre = unslugify(ej.ejercicioId);
+
+      if (found) {
+        // Rehidrata datos del catálogo (técnica, tier, imágenes…) pero conserva
+        // el nombre persistido, que refleja la variante exacta del usuario.
+        return {
+          ...ej,
+          ejercicio: { ...found, ...ej.ejercicio, nombre: persistedName ?? found.nombre },
+        };
+      }
+
+      // Ya viene completo (técnica incluida): no hay nada que rehidratar.
+      if (ej.ejercicio?.tecnica) return ej;
+
+      // Sin coincidencia en el catálogo: stub con nombre legible para que la
+      // UI nunca muestre un nombre vacío ni un "•".
+      const nombre = persistedName ?? unslugify(ej.ejercicioId);
       return {
         ...ej,
-        ejercicio: {
-          ...makeStubExercise(nombre, 0),
-          id: ej.ejercicioId,
-          nombre,
-        },
+        ejercicio: { ...makeStubExercise(nombre, 0), ...ej.ejercicio, id: ej.ejercicioId, nombre },
       };
     }),
   }));
